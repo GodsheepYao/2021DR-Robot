@@ -29,7 +29,7 @@ void Remote_Task(void *pvParameters) {
 }
 
 #if RM_REMOTE
-/* RMÒ£¿ØÆ÷ */
+///* RMÒ£¿ØÆ÷ */
 //void RemoteControlProcess(Remote *rc) {
 //    Chassis_RoboModule3.ExpVelocity = (int16_t)((rc->ch2 - REMOTE_CONTROLLER_STICK_OFFSET) * Sensitivity_Y * VY_CONSTANT 
 //                                        + (rc->ch3 - REMOTE_CONTROLLER_STICK_OFFSET) * Sensitivity_X * VX_CONSTANT 
@@ -43,13 +43,13 @@ void Remote_Task(void *pvParameters) {
 //}
 
 void RemoteControlProcess(Remote *rc) {
-    Chassis_RoboModule1.ExpVelocity = (int16_t)((rc->ch2 - REMOTE_CONTROLLER_STICK_OFFSET) * Sensitivity_Y * sin(MOTOR_ANGLE) 
+    Chassis_RoboModule1.ExpVelocity = ((rc->ch2 - REMOTE_CONTROLLER_STICK_OFFSET) * Sensitivity_Y * sin(MOTOR_ANGLE) 
                                         - (rc->ch3 - REMOTE_CONTROLLER_STICK_OFFSET) * Sensitivity_X * cos(MOTOR_ANGLE) 
                                         + (rc->ch0 - REMOTE_CONTROLLER_STICK_OFFSET));
-    Chassis_RoboModule2.ExpVelocity = (int16_t)(-(rc->ch2 - REMOTE_CONTROLLER_STICK_OFFSET) * Sensitivity_Y * sin(MOTOR_ANGLE) 
+    Chassis_RoboModule2.ExpVelocity = (-(rc->ch2 - REMOTE_CONTROLLER_STICK_OFFSET) * Sensitivity_Y * sin(MOTOR_ANGLE) 
                                         + (-(rc->ch2 - REMOTE_CONTROLLER_STICK_OFFSET)) * Sensitivity_X * cos(MOTOR_ANGLE) 
                                         + (rc->ch0 - REMOTE_CONTROLLER_STICK_OFFSET));
-    Chassis_RoboModule3.ExpVelocity = (int16_t)((rc->ch2 - REMOTE_CONTROLLER_STICK_OFFSET) * Sensitivity_Y * sin(MOTOR_ANGLE)
+    Chassis_RoboModule3.ExpVelocity = ((rc->ch2 - REMOTE_CONTROLLER_STICK_OFFSET) * Sensitivity_Y * sin(MOTOR_ANGLE)
                                         + (rc->ch3 - REMOTE_CONTROLLER_STICK_OFFSET) * Sensitivity_X * cos(MOTOR_ANGLE) 
                                         + (rc->ch0 - REMOTE_CONTROLLER_STICK_OFFSET));
 
@@ -63,8 +63,8 @@ void Remote_Recieve(Remote_Handle_t *rc, uint8_t *rx_data) {
         if(pack->crc == Verify_CRC16_Check_Sum(rx_data, 19)) {
             dataPack = *pack;  
             
-            rc->Ex = (dataPack.rocker[0] - 2047);
-            rc->Ey = (dataPack.rocker[1] - 2047);
+            rc->Ex = -(dataPack.rocker[0] - 2047);
+            rc->Ey = -(dataPack.rocker[1] - 2047);
             rc->Eangle = (dataPack.rocker[2] - 2047);
             rc->Key_Control = &dataPack.Key;
             
@@ -80,9 +80,9 @@ void Remote_DataProcess(Remote_Handle_t *rc) {
         Chassis_RoboModule2.ExpVelocity = (int16_t) rc->Ey * 0.5;
         Chassis_RoboModule3.ExpVelocity = (int16_t) rc->Ey * 0.5;
     } else {
-        Chassis_RoboModule1.ExpVelocity = (int16_t)(rc->Ex * cos(MOTOR_ANGLE) - rc->Ey * sin(MOTOR_ANGLE));
-        Chassis_RoboModule2.ExpVelocity = (int16_t)(-rc->Ex * cos(MOTOR_ANGLE) + (-rc->Ex) * sin(MOTOR_ANGLE));
-        Chassis_RoboModule3.ExpVelocity = (int16_t)(rc->Ex * cos(MOTOR_ANGLE) + rc->Ey * sin(MOTOR_ANGLE));
+        Chassis_RoboModule1.ExpVelocity = (int16_t)(rc->Ey * sin(MOTOR_ANGLE) - rc->Ex * cos(MOTOR_ANGLE));
+        Chassis_RoboModule2.ExpVelocity = (int16_t)(-rc->Ey * cos(MOTOR_ANGLE) + (-rc->Ey) * sin(MOTOR_ANGLE));
+        Chassis_RoboModule3.ExpVelocity = (int16_t)(rc->Ey * sin(MOTOR_ANGLE) + rc->Ex * cos(MOTOR_ANGLE));
     }
 }
 

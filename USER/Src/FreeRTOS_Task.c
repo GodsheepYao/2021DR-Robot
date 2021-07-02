@@ -6,7 +6,7 @@ RoboModule_Typedef Chassis_RoboModule1 = {.ID = 0x10, .ExpPWM = 5000},
                    Chassis_RoboModule2 = {.ID = 0x20, .ExpPWM = 5000}, 
                    Chassis_RoboModule3 = {.ID = 0x30, .ExpPWM = 5000};
 
-void StartTask(void){
+void StartTask(void) {
     Remote_Semaphore = xSemaphoreCreateBinary();
     
     CanFilter_Init(&hcan1);
