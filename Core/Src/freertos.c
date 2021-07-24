@@ -122,6 +122,7 @@ void MX_FREERTOS_Init(void) {
 void StartDefaultTask(void const * argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
+	vTaskDelay(4000);
     vPortEnterCritical();
     StartTask();
     vPortExitCritical();
